@@ -9,7 +9,7 @@ import (
 var taskItems []string // Global variable to hold tasks
 
 func main() {
-	// Initialize tasks
+	// Initialize tasks slice , type is string
 	taskItems = []string{"Learn Go", "Learn Fiber framework", "Learn Algorithms"}
 
 	fmt.Println("Welcome to the todo list!")
