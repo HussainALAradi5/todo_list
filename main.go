@@ -7,7 +7,8 @@ import (
 
 func main() {
 	fmt.Println("Welcome to the todo list!")
-	http.ListenAndServe()
+	port := ":8080"
+	http.ListenAndServe(port, nil)
 }
 
 func printTasks(taskItems []string) {
