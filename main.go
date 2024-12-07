@@ -8,6 +8,7 @@ import (
 func main() {
 	fmt.Println("Welcome to the todo list!")
 	port := ":8080"
+	http.HandleFunc("/", helloUser)
 	http.ListenAndServe(port, nil)
 }
 
@@ -29,4 +30,8 @@ func removeTask(taskItems []string, index int) []string {
 	}
 	updatedList := append(taskItems[:index], taskItems[index+1:]...)
 	return updatedList
+}
+func helloUser(writer http.ResponseWriter, request *http.Request) {
+	greeting := "Welcome to our app"
+	fmt.Fprintln(writer, greeting)
 }
