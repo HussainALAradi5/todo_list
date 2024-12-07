@@ -45,7 +45,7 @@ its just that simple 😊
 
 ### **Credits**
 
-i) [OfficalWebsite](https://go.dev/)
-ii) [progressBar](https://shields.io/)
+1. [OfficalWebsite](https://go.dev/)
+2. [progressBar](https://shields.io/)
 
 ---
