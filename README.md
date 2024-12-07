@@ -14,8 +14,6 @@
 
 #### this project is a tutorial for me to learn the initlize fundemantel of the nice go/golang.
 
-#### [Project](Todo List)
-
 ---
 
 ### **what is inclue in this repository?**
