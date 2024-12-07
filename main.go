@@ -12,6 +12,6 @@ func test() {
 	taskItems := []string{taskOne, taskTwo, taskThree}
 	fmt.Println("Welcome to our todolist app")
 	for index, task := range taskItems {
-		fmt.Println("task#", index, task)
+		fmt.Println("task#", index+1, task)
 	}
 }
