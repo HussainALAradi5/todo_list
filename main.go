@@ -13,6 +13,7 @@ func test() {
 	fmt.Println("Welcome to our todolist app")
 	printTasks(taskItems)
 	addTask(taskItems, "learn java")
+	fmt.Print(taskItems)
 }
 func printTasks(taskItems []string) {
 
@@ -21,8 +22,7 @@ func printTasks(taskItems []string) {
 		fmt.Println("task#", index+1, task)
 	}
 }
-func addTask(taskItems []string, newTask string) {
+func addTask(taskItems []string, newTask string) []string {
 	update := append(taskItems, newTask)
-	fmt.Println("the updated list:")
-	printTasks(update)
+	return update
 }
