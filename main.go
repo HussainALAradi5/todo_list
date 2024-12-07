@@ -12,7 +12,7 @@ func test() {
 	taskItems := []string{taskOne, taskTwo, taskThree}
 	fmt.Println("Welcome to our todolist app")
 	printTasks(taskItems)
-	addTask(taskItems, "learn java")
+	taskItems = addTask(taskItems, "learn java")
 	fmt.Print(taskItems)
 }
 func printTasks(taskItems []string) {
