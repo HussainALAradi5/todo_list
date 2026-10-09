@@ -16,6 +16,16 @@ A clean, responsive todo app for Android and iPhone, built with Flutter.
 
 The app opens with a few editable example tasks on first launch. After that, it restores your saved tasks, including an empty list if you delete them all.
 
+## Screenshots
+
+| Today and priorities | Create a task | Dark mode and progress |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/today-light.png" alt="Today view with urgent and high priority tasks" width="260"> | <img src="docs/screenshots/task-editor.png" alt="Task editor with category and urgent priority selected" width="260"> | <img src="docs/screenshots/today-dark.png" alt="Dark mode Today view showing 25 percent progress" width="260"> |
+
+The layout also adapts when the phone rotates:
+
+<img src="docs/screenshots/landscape.png" alt="Landscape dashboard with side navigation and task list" width="860">
+
 ## Project structure
 
 ```text
