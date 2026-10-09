@@ -9,6 +9,8 @@ A clean, responsive todo app for Android and iPhone, built with Flutter.
 - Categories, Normal/High/Urgent priority, notes, due dates, and times
 - Search and category filters
 - Swipe right to complete or restore, swipe left to delete, and undo either action
+- Clear in-app feedback after saving, completing, restoring, and deleting
+- Delete confirmation and processing-aware Save/Delete buttons
 - Animated progress feedback
 - Persistent light and dark mode toggle
 - Responsive portrait and landscape layouts for phones
@@ -19,6 +21,17 @@ The app opens with a few editable example tasks on first launch. After that, it 
 ## See it in action
 
 These screens were captured from the Android app with example tasks. The same Flutter interface is designed for iPhone as well.
+
+### Latest update: clearer actions
+
+Save and Delete show a busy indicator and disable repeat taps while the change is stored. Deleting from the task menu asks for confirmation; the result appears with an **Undo** action. The controls also adapt to dark mode.
+
+[Watch confirmation and feedback in both themes (MP4)](docs/dayly-confirmation-feedback.mp4). The [earlier interaction demo](docs/dayly-update.mp4) remains available.
+
+| Theme | Delete confirmation | Feedback with Undo |
+|:---:|:---:|:---:|
+| Light | <img src="docs/screenshots/delete-confirmation.png" alt="Light mode delete confirmation naming the selected task" width="290"> | <img src="docs/screenshots/delete-undo-feedback.png" alt="Light mode task deleted feedback with an Undo action" width="290"> |
+| Dark | <img src="docs/screenshots/delete-confirmation-dark.png" alt="Dark mode delete confirmation naming the selected task" width="290"> | <img src="docs/screenshots/delete-undo-feedback-dark.png" alt="Dark mode task deleted feedback with an Undo action" width="290"> |
 
 ### Focus on today
 

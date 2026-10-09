@@ -39,7 +39,7 @@ class HomeContent extends StatelessWidget {
   final ValueChanged<TaskCategory?> onCategoryChanged;
   final VoidCallback onAdd;
   final ValueChanged<TodoTask> onEdit;
-  final ValueChanged<String> onToggle;
+  final ValueChanged<TodoTask> onToggle;
   final ValueChanged<TodoTask> onDelete;
   final void Function(TodoTask task, DismissDirection direction) onSwiped;
 
@@ -120,7 +120,7 @@ class HomeContent extends StatelessWidget {
               return SwipeableTaskCard(
                 key: ValueKey(task.id),
                 task: task,
-                onToggle: () => onToggle(task.id),
+                onToggle: () => onToggle(task),
                 onEdit: () => onEdit(task),
                 onDelete: () => onDelete(task),
                 onSwiped: onSwiped,

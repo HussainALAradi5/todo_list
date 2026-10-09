@@ -46,6 +46,7 @@ void main() {
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
     expect(find.byType(HomeSideBar), findsOneWidget);
+    expect(find.text('Task created'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
     tester.view.physicalSize = const Size(390, 844);
@@ -74,6 +75,12 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(HomeSideBar), findsOneWidget);
     expect(find.byType(TaskCard), findsWidgets);
+    expect(tester.takeException(), isNull);
+
+    await tester.tap(find.bySemanticsLabel('Complete task').first);
+    await tester.pumpAndSettle();
+    expect(find.text('Task completed'), findsOneWidget);
+    expect(find.text('Undo'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

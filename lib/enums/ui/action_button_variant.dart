@@ -1,0 +1,1 @@
+enum ActionButtonVariant { filled, text }

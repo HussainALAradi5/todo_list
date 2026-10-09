@@ -8,7 +8,9 @@ import '../data/task_store.dart';
 import '../enums/navigation/task_view.dart';
 import '../enums/task/task_category.dart';
 import '../models/todo_task.dart';
+import '../services/task_feedback_service.dart';
 import '../services/task_query_service.dart';
+import '../widgets/dialogs/task_delete_dialog.dart';
 import '../widgets/home/home_bottom_bar.dart';
 import '../widgets/home/home_content.dart';
 import '../widgets/home/home_side_bar.dart';
@@ -24,6 +26,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late final TaskStore _store;
   final _taskQuery = const TaskQueryService();
+  final _feedback = const TaskFeedbackService();
   TaskView _view = TaskView.today;
   TaskCategory? _category;
   bool _showSearch = false;
@@ -49,31 +52,85 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _openEditor([TodoTask? task]) async {
-    final result = await Navigator.of(context).push<TodoTask>(
-      MaterialPageRoute(builder: (_) => TaskEditorScreen(task: task)),
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+    final saved = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => TaskEditorScreen(task: task, onSave: _store.upsert),
+      ),
     );
-    if (result != null) await _store.upsert(result);
+    if (saved != true || !mounted) return;
+    _feedback.show(
+      context,
+      message: task == null ? 'Task created' : 'Changes saved',
+      icon: Icons.check_circle_outline_rounded,
+    );
   }
 
   Future<void> _deleteTask(TodoTask task) async {
-    final shouldDelete = await showDialog<bool>(
+    final deleted = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete task?'),
-        content: Text('“${task.title}” will be removed.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete'),
-          ),
-        ],
+      barrierDismissible: false,
+      builder: (_) => TaskDeleteDialog(
+        title: task.title,
+        onDelete: () => _store.delete(task.id),
       ),
     );
-    if (shouldDelete == true) await _store.delete(task.id);
+    if (deleted == true) _showDeleted(task);
+  }
+
+  Future<void> _toggleTask(TodoTask task) async {
+    try {
+      await _store.toggle(task.id);
+    } catch (_) {
+      _showWriteError('Could not update task. Try again.');
+      return;
+    }
+    if (!mounted) return;
+    _feedback.show(
+      context,
+      message: task.isCompleted ? 'Task restored' : 'Task completed',
+      icon: task.isCompleted ? Icons.restore_rounded : Icons.task_alt_rounded,
+      onUndo: () => unawaited(_restoreTask(task)),
+    );
+  }
+
+  Future<void> _removeTask(TodoTask task) async {
+    try {
+      await _store.delete(task.id);
+    } catch (_) {
+      _showWriteError('Could not delete task. Try again.');
+      return;
+    }
+    _showDeleted(task);
+  }
+
+  Future<void> _restoreTask(TodoTask task) async {
+    try {
+      await _store.upsert(task);
+    } catch (_) {
+      _showWriteError('Could not restore task. Try again.');
+    }
+  }
+
+  void _showWriteError(String message) {
+    if (!mounted) return;
+    _feedback.show(
+      context,
+      message: message,
+      icon: Icons.error_outline_rounded,
+      iconColor: Theme.of(context).colorScheme.error,
+    );
+  }
+
+  void _showDeleted(TodoTask task) {
+    if (!mounted) return;
+    _feedback.show(
+      context,
+      message: 'Task deleted',
+      icon: Icons.delete_outline_rounded,
+      iconColor: Theme.of(context).colorScheme.error,
+      onUndo: () => unawaited(_restoreTask(task)),
+    );
   }
 
   void _selectView(TaskView view) => setState(() {
@@ -84,32 +141,12 @@ class _HomeScreenState extends State<HomeScreen> {
   });
 
   void _handleSwipe(TodoTask task, DismissDirection direction) {
-    final completed = direction == DismissDirection.startToEnd;
-    if (completed) {
-      unawaited(_store.toggle(task.id));
-    } else {
-      unawaited(_store.delete(task.id));
-    }
-    unawaited(HapticFeedback.selectionClick());
-
-    final messenger = ScaffoldMessenger.of(context);
-    messenger.hideCurrentSnackBar();
-    messenger.showSnackBar(
-      SnackBar(
-        behavior: SnackBarBehavior.floating,
-        content: Text(
-          completed
-              ? task.isCompleted
-                    ? 'Task restored'
-                    : 'Task completed'
-              : 'Task deleted',
-        ),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () => unawaited(_store.upsert(task)),
-        ),
-      ),
+    unawaited(
+      direction == DismissDirection.startToEnd
+          ? _toggleTask(task)
+          : _removeTask(task),
     );
+    unawaited(HapticFeedback.selectionClick());
   }
 
   @override
@@ -138,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onCategoryChanged: (category) => setState(() => _category = category),
       onAdd: () => _openEditor(),
       onEdit: _openEditor,
-      onToggle: _store.toggle,
+      onToggle: (task) => unawaited(_toggleTask(task)),
       onDelete: _deleteTask,
       onSwiped: _handleSwipe,
     );

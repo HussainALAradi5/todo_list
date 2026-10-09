@@ -10,6 +10,7 @@ class TaskStore extends ChangeNotifier {
   final TaskRepository _repository;
   final _starterTasks = const StarterTaskService();
   final List<TodoTask> _tasks = [];
+  Future<void> _pendingWrite = Future.value();
   bool isLoading = true;
 
   List<TodoTask> get tasks => List.unmodifiable(_tasks);
@@ -32,18 +33,16 @@ class TaskStore extends ChangeNotifier {
     }
   }
 
-  Future<void> upsert(TodoTask task) async {
+  Future<void> upsert(TodoTask task) => _commit(() {
     final index = _tasks.indexWhere((item) => item.id == task.id);
     if (index == -1) {
       _tasks.add(task);
     } else {
       _tasks[index] = task;
     }
-    notifyListeners();
-    await _persist();
-  }
+  });
 
-  Future<void> toggle(String id) async {
+  Future<void> toggle(String id) => _commit(() {
     final index = _tasks.indexWhere((task) => task.id == id);
     if (index == -1) return;
     final task = _tasks[index];
@@ -56,21 +55,28 @@ class TaskStore extends ChangeNotifier {
       priority: task.priority,
       isCompleted: !task.isCompleted,
     );
-    notifyListeners();
-    await _persist();
-  }
+  });
 
-  Future<void> delete(String id) async {
-    _tasks.removeWhere((task) => task.id == id);
-    notifyListeners();
-    await _persist();
-  }
+  Future<void> delete(String id) =>
+      _commit(() => _tasks.removeWhere((task) => task.id == id));
 
-  Future<void> _persist() async {
-    try {
-      await _repository.save(_tasks);
-    } catch (error) {
-      debugPrint('Could not save tasks: $error');
-    }
+  Future<void> _commit(void Function() change) {
+    final operation = _pendingWrite.then((_) async {
+      final previous = List<TodoTask>.of(_tasks);
+      change();
+      notifyListeners();
+      try {
+        await _repository.save(_tasks);
+      } catch (error) {
+        _tasks
+          ..clear()
+          ..addAll(previous);
+        notifyListeners();
+        debugPrint('Could not save tasks: $error');
+        rethrow;
+      }
+    });
+    _pendingWrite = operation.then<void>((_) {}, onError: (Object _) {});
+    return operation;
   }
 }

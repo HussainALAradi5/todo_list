@@ -4,6 +4,7 @@ import 'package:todo_list/data/shared_preferences_task_repository.dart';
 import 'package:todo_list/data/task_store.dart';
 import 'package:todo_list/enums/task/task_category.dart';
 import 'package:todo_list/enums/task/task_priority.dart';
+import 'package:todo_list/interfaces/task_repository.dart';
 import 'package:todo_list/models/todo_task.dart';
 
 void main() {
@@ -50,4 +51,30 @@ void main() {
     await afterDelete.load();
     expect(afterDelete.tasks.any((item) => item.id == task.id), isFalse);
   });
+
+  test('failed writes restore the previous task list', () async {
+    final repository = _FailingRepository();
+    final store = TaskStore(repository);
+    await store.load();
+    final task = TodoTask(
+      id: 'new-task',
+      title: 'Pay rent',
+      dueAt: null,
+      category: TaskCategory.personal,
+      priority: TaskPriority.normal,
+    );
+
+    await expectLater(store.upsert(task), throwsStateError);
+    expect(store.tasks, isEmpty);
+  });
+}
+
+class _FailingRepository implements TaskRepository {
+  @override
+  Future<List<TodoTask>?> load() async => [];
+
+  @override
+  Future<void> save(List<TodoTask> tasks) async {
+    throw StateError('Storage unavailable');
+  }
 }
