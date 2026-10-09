@@ -1,0 +1,1 @@
+enum TaskAction { edit, delete }
