@@ -27,19 +27,30 @@ class HomeBottomBar extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(17, 8, 17, 7),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            HomeNavItem(
-              label: 'Today',
-              icon: Icons.today_rounded,
-              selected: selected == TaskView.today,
-              onTap: () => onSelect(TaskView.today),
+            Expanded(
+              child: HomeNavItem(
+                label: 'All',
+                icon: Icons.view_list_rounded,
+                selected: selected == TaskView.all,
+                onTap: () => onSelect(TaskView.all),
+              ),
             ),
-            HomeNavItem(
-              label: 'Upcoming',
-              icon: Icons.calendar_month_outlined,
-              selected: selected == TaskView.upcoming,
-              onTap: () => onSelect(TaskView.upcoming),
+            Expanded(
+              child: HomeNavItem(
+                label: 'Today',
+                icon: Icons.today_rounded,
+                selected: selected == TaskView.today,
+                onTap: () => onSelect(TaskView.today),
+              ),
+            ),
+            Expanded(
+              child: HomeNavItem(
+                label: 'Upcoming',
+                icon: Icons.calendar_month_outlined,
+                selected: selected == TaskView.upcoming,
+                onTap: () => onSelect(TaskView.upcoming),
+              ),
             ),
             Semantics(
               label: 'Add task',
@@ -54,11 +65,13 @@ class HomeBottomBar extends StatelessWidget {
                 ),
               ),
             ),
-            HomeNavItem(
-              label: 'Done',
-              icon: Icons.check_circle_outline_rounded,
-              selected: selected == TaskView.completed,
-              onTap: () => onSelect(TaskView.completed),
+            Expanded(
+              child: HomeNavItem(
+                label: 'Done',
+                icon: Icons.check_circle_outline_rounded,
+                selected: selected == TaskView.completed,
+                onTap: () => onSelect(TaskView.completed),
+              ),
             ),
           ],
         ),

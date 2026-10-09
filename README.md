@@ -5,6 +5,7 @@ A clean, responsive todo app for Android and iPhone, built with Flutter.
 ## Features
 
 - Today, Upcoming, and Completed views
+- All tasks view with day and time range filters that can be combined
 - Add, edit, complete, and delete tasks
 - Categories, Normal/High/Urgent priority, notes, due dates, and times
 - Search and category filters
@@ -15,12 +16,25 @@ A clean, responsive todo app for Android and iPhone, built with Flutter.
 - Persistent light and dark mode toggle
 - Responsive portrait and landscape layouts for phones
 - Local task storage with `shared_preferences`
+- Optional on-device reminders for tasks with a future due date and time
 
 The app opens with a few editable example tasks on first launch. After that, it restores your saved tasks, including an empty list if you delete them all.
 
 ## See it in action
 
 These screens were captured from the Android app with example tasks. The same Flutter interface is designed for iPhone as well.
+
+### Find the right time
+
+Open **All**, then **Date & time** to find tasks due on a day, between days, between hours, or with both ranges together. Time ranges can cross midnight. Search and category filters still work alongside the date and time filter.
+
+<img src="docs/screenshots/time-filter.png" alt="Date and time filter sheet with day and hour ranges" width="370">
+
+### Get a reminder
+
+When editing a task with a future due date, choose **At due time**, **10 min before**, **1 hour before**, or **1 day before**. Reminders are off by default, and the app asks for notification permission when you first enable one. Completing, deleting, or changing a task updates its local reminder. Android may delay delivery slightly to conserve battery.
+
+<img src="docs/screenshots/task-reminder.png" alt="Task editor showing an active due-time reminder" width="370">
 
 ### Latest update: clearer actions
 
@@ -78,17 +92,18 @@ Tasks and the selected theme are saved locally and restored when the app reopens
 ```text
 lib/
   constants/  Shared layout values and storage keys
+  controllers/ Task actions and home filter state
   data/       SharedPreferences adapters and app state
-  enums/      Navigation and task enum subfolders
-  extensions/ Category and priority presentation, derived progress values
-  interfaces/ Task and theme storage contracts
+  enums/      Navigation, task, and UI enum subfolders
+  extensions/ Category, priority, reminder, and progress presentation
+  interfaces/ Storage and reminder contracts
   mappers/    JSON conversion for task storage
-  models/     Task and progress data only
+  models/     Task, progress, and filter data only
   screens/    Dashboard and task editor
-  services/   Task queries and first-launch examples
+  services/   Task queries, reminders, feedback, and first-launch examples
   theme/      Light/dark palettes and Material themes
-  utils/      Date formatting
-  widgets/    home/, task_card/, task_editor/, and theme/ components
+  utils/      Date formatting and stable notification IDs
+  widgets/    common/, dialogs/, filters/, home/, task_card/, task_editor/, theme/
 ```
 
 ## Run

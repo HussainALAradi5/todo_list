@@ -4,6 +4,7 @@ import 'package:todo_list/data/shared_preferences_task_repository.dart';
 import 'package:todo_list/data/task_store.dart';
 import 'package:todo_list/enums/task/task_category.dart';
 import 'package:todo_list/enums/task/task_priority.dart';
+import 'package:todo_list/enums/task/task_reminder.dart';
 import 'package:todo_list/interfaces/task_repository.dart';
 import 'package:todo_list/models/todo_task.dart';
 
@@ -23,6 +24,7 @@ void main() {
       dueAt: DateTime(2026, 10, 10, 9),
       category: TaskCategory.work,
       priority: TaskPriority.urgent,
+      reminder: TaskReminder.tenMinutesBefore,
     );
     await store.upsert(task);
     await store.upsert(
@@ -33,6 +35,7 @@ void main() {
         dueAt: task.dueAt,
         category: task.category,
         priority: task.priority,
+        reminder: task.reminder,
       ),
     );
     await store.toggle(task.id);
@@ -44,6 +47,7 @@ void main() {
     expect(savedTask.isCompleted, isTrue);
     expect(savedTask.category, TaskCategory.work);
     expect(savedTask.priority, TaskPriority.urgent);
+    expect(savedTask.reminder, TaskReminder.tenMinutesBefore);
     expect(savedTask.dueAt, DateTime(2026, 10, 10, 9));
 
     await restored.delete(task.id);

@@ -83,4 +83,22 @@ void main() {
     expect(find.text('Undo'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('bottom navigation fits narrow phones', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(320, 640);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const TodoApp());
+    await tester.pumpAndSettle();
+    expect(find.byType(HomeBottomBar), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    tester.view.physicalSize = const Size(280, 640);
+    await tester.pumpAndSettle();
+    expect(find.byType(HomeBottomBar), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }

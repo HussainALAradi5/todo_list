@@ -21,6 +21,7 @@ class HomeTopBar extends StatelessWidget {
     builder: (context, constraints) {
       final palette = context.palette;
       final isDark = Theme.of(context).brightness == Brightness.dark;
+      final themeStore = ThemeScope.of(context);
       final compact = constraints.maxWidth < 280;
       return Row(
         children: [
@@ -66,7 +67,9 @@ class HomeTopBar extends StatelessWidget {
           ],
           IconButton.filledTonal(
             tooltip: isDark ? 'Switch to light mode' : 'Switch to dark mode',
-            onPressed: () => unawaited(ThemeScope.of(context).toggle()),
+            onPressed: themeStore.isSaving
+                ? null
+                : () => unawaited(themeStore.toggle()),
             icon: Icon(
               isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
             ),

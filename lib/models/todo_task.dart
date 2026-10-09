@@ -1,5 +1,6 @@
 import '../enums/task/task_category.dart';
 import '../enums/task/task_priority.dart';
+import '../enums/task/task_reminder.dart';
 
 class TodoTask {
   const TodoTask({
@@ -10,6 +11,7 @@ class TodoTask {
     this.category = TaskCategory.personal,
     this.priority = TaskPriority.normal,
     this.isCompleted = false,
+    this.reminder = TaskReminder.none,
   });
 
   final String id;
@@ -19,4 +21,5 @@ class TodoTask {
   final TaskCategory category;
   final TaskPriority priority;
   final bool isCompleted;
+  final TaskReminder reminder;
 }

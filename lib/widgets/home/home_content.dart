@@ -4,6 +4,7 @@ import '../../constants/layout_constants.dart';
 import '../../enums/navigation/task_view.dart';
 import '../../enums/task/task_category.dart';
 import '../../models/task_progress.dart';
+import '../../models/task_time_filter.dart';
 import '../../models/todo_task.dart';
 import 'empty_task_state.dart';
 import 'home_overview.dart';
@@ -21,6 +22,9 @@ class HomeContent extends StatelessWidget {
     required this.onSearchToggle,
     required this.onSearchChanged,
     required this.onCategoryChanged,
+    required this.timeFilter,
+    required this.onTimeFilterOpen,
+    required this.onTimeFilterClear,
     required this.onAdd,
     required this.onEdit,
     required this.onToggle,
@@ -37,6 +41,9 @@ class HomeContent extends StatelessWidget {
   final VoidCallback onSearchToggle;
   final ValueChanged<String> onSearchChanged;
   final ValueChanged<TaskCategory?> onCategoryChanged;
+  final TaskTimeFilter? timeFilter;
+  final VoidCallback onTimeFilterOpen;
+  final VoidCallback onTimeFilterClear;
   final VoidCallback onAdd;
   final ValueChanged<TodoTask> onEdit;
   final ValueChanged<TodoTask> onToggle;
@@ -54,6 +61,9 @@ class HomeContent extends StatelessWidget {
       onSearchToggle: onSearchToggle,
       onSearchChanged: onSearchChanged,
       onCategoryChanged: onCategoryChanged,
+      timeFilter: timeFilter,
+      onTimeFilterOpen: onTimeFilterOpen,
+      onTimeFilterClear: onTimeFilterClear,
     );
 
     if (landscape) {

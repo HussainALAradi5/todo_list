@@ -8,6 +8,7 @@ class TaskEditorLayout extends StatelessWidget {
     required this.textFields,
     required this.categoryField,
     required this.dueDateField,
+    required this.reminderField,
     required this.priorityField,
     required this.saveButton,
   });
@@ -15,6 +16,7 @@ class TaskEditorLayout extends StatelessWidget {
   final Widget textFields;
   final Widget categoryField;
   final Widget dueDateField;
+  final Widget reminderField;
   final Widget priorityField;
   final Widget saveButton;
 
@@ -49,6 +51,8 @@ class TaskEditorLayout extends StatelessWidget {
                 const SizedBox(height: 20),
                 dueDateField,
                 const SizedBox(height: 20),
+                reminderField,
+                const SizedBox(height: 20),
                 priorityField,
               ],
             ),
@@ -73,6 +77,8 @@ class TaskEditorLayout extends StatelessWidget {
               categoryField,
               const SizedBox(height: 28),
               dueDateField,
+              const SizedBox(height: 28),
+              reminderField,
               const SizedBox(height: 28),
               priorityField,
             ],

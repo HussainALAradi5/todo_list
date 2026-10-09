@@ -4,7 +4,9 @@ import '../../enums/navigation/task_view.dart';
 import '../../enums/task/task_category.dart';
 import '../../extensions/task_progress_values.dart';
 import '../../models/task_progress.dart';
+import '../../models/task_time_filter.dart';
 import '../../theme/app_palette.dart';
+import '../filters/task_time_filter_bar.dart';
 import 'category_filter_bar.dart';
 import 'home_top_bar.dart';
 import 'progress_card.dart';
@@ -20,6 +22,9 @@ class HomeOverview extends StatelessWidget {
     required this.onSearchToggle,
     required this.onSearchChanged,
     required this.onCategoryChanged,
+    required this.timeFilter,
+    required this.onTimeFilterOpen,
+    required this.onTimeFilterClear,
   });
 
   final TaskView view;
@@ -30,6 +35,9 @@ class HomeOverview extends StatelessWidget {
   final VoidCallback onSearchToggle;
   final ValueChanged<String> onSearchChanged;
   final ValueChanged<TaskCategory?> onCategoryChanged;
+  final TaskTimeFilter? timeFilter;
+  final VoidCallback onTimeFilterOpen;
+  final VoidCallback onTimeFilterClear;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -38,12 +46,14 @@ class HomeOverview extends StatelessWidget {
       HomeTopBar(onSearch: onSearchToggle, searchActive: searchVisible),
       const SizedBox(height: 32),
       Text(switch (view) {
+        TaskView.all => 'Everything in view.',
         TaskView.today => 'Make today count.',
         TaskView.upcoming => 'Coming up.',
         TaskView.completed => 'Nicely done.',
       }, style: Theme.of(context).textTheme.headlineLarge),
       const SizedBox(height: 6),
       Text(switch (view) {
+        TaskView.all => 'Find what needs your attention.',
         TaskView.today =>
           progress.remaining == 0
               ? 'You’re all caught up for today.'
@@ -72,6 +82,7 @@ class HomeOverview extends StatelessWidget {
           Expanded(
             child: Text(
               switch (view) {
+                TaskView.all => 'All tasks',
                 TaskView.today => 'Your tasks',
                 TaskView.upcoming => 'Upcoming tasks',
                 TaskView.completed => 'Completed tasks',
@@ -98,12 +109,17 @@ class HomeOverview extends StatelessWidget {
         onChanged: onCategoryChanged,
       ),
       const SizedBox(height: 8),
-      Text(
-        view == TaskView.completed
-            ? 'Swipe right to restore · left to delete'
-            : 'Swipe right to finish · left to delete',
-        style: TextStyle(color: context.palette.muted, fontSize: 11),
+      TaskTimeFilterBar(
+        filter: timeFilter,
+        onOpen: onTimeFilterOpen,
+        onClear: onTimeFilterClear,
       ),
+      const SizedBox(height: 8),
+      Text(switch (view) {
+        TaskView.completed => 'Swipe right to restore · left to delete',
+        TaskView.all => 'Swipe right to finish or restore · left to delete',
+        _ => 'Swipe right to finish · left to delete',
+      }, style: TextStyle(color: context.palette.muted, fontSize: 11)),
       const SizedBox(height: 17),
     ],
   );

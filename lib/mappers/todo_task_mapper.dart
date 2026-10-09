@@ -1,5 +1,6 @@
 import '../enums/task/task_category.dart';
 import '../enums/task/task_priority.dart';
+import '../enums/task/task_reminder.dart';
 import '../models/todo_task.dart';
 
 class TodoTaskMapper {
@@ -13,6 +14,7 @@ class TodoTaskMapper {
     'category': task.category.name,
     'priority': task.priority.name,
     'isCompleted': task.isCompleted,
+    'reminder': task.reminder.name,
   };
 
   static TodoTask fromJson(Map<String, dynamic> json) => TodoTask(
@@ -27,5 +29,9 @@ class TodoTaskMapper {
       json['priority'] as String? ?? TaskPriority.normal.name,
     ),
     isCompleted: json['isCompleted'] as bool? ?? false,
+    reminder: TaskReminder.values.firstWhere(
+      (value) => value.name == json['reminder'],
+      orElse: () => TaskReminder.none,
+    ),
   );
 }

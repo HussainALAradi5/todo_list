@@ -1,10 +1,14 @@
 import '../enums/navigation/task_view.dart';
 import '../enums/task/task_category.dart';
 import '../models/task_progress.dart';
+import '../models/task_time_filter.dart';
 import '../models/todo_task.dart';
+import 'task_time_filter_service.dart';
 
 class TaskQueryService {
   const TaskQueryService();
+
+  static const _timeFilter = TaskTimeFilterService();
 
   List<TodoTask> visibleTasks(
     List<TodoTask> tasks, {
@@ -12,11 +16,13 @@ class TaskQueryService {
     required DateTime now,
     TaskCategory? category,
     String query = '',
+    TaskTimeFilter? timeFilter,
   }) {
     final today = _day(now);
     final search = query.trim().toLowerCase();
     final results = tasks.where((task) {
       final inView = switch (view) {
+        TaskView.all => true,
         TaskView.today => !task.isCompleted && _isDueBy(task, today),
         TaskView.upcoming =>
           !task.isCompleted &&
@@ -25,6 +31,7 @@ class TaskQueryService {
         TaskView.completed => task.isCompleted,
       };
       return inView &&
+          _timeFilter.matches(task.dueAt, timeFilter) &&
           (category == null || task.category == category) &&
           (search.isEmpty ||
               task.title.toLowerCase().contains(search) ||
@@ -32,6 +39,9 @@ class TaskQueryService {
     }).toList();
 
     results.sort((first, second) {
+      if (view == TaskView.all && first.isCompleted != second.isCompleted) {
+        return first.isCompleted ? 1 : -1;
+      }
       if (view != TaskView.completed && first.priority != second.priority) {
         return second.priority.index.compareTo(first.priority.index);
       }

@@ -1,20 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
+import '../controllers/home_filter_controller.dart';
+import '../controllers/task_action_controller.dart';
 import '../data/shared_preferences_task_repository.dart';
 import '../data/task_store.dart';
-import '../enums/navigation/task_view.dart';
-import '../enums/task/task_category.dart';
-import '../models/todo_task.dart';
-import '../services/task_feedback_service.dart';
+import '../models/task_time_filter.dart';
 import '../services/task_query_service.dart';
-import '../widgets/dialogs/task_delete_dialog.dart';
+import '../services/task_reminder_service.dart';
+import '../widgets/filters/task_time_filter_sheet.dart';
 import '../widgets/home/home_bottom_bar.dart';
 import '../widgets/home/home_content.dart';
 import '../widgets/home/home_side_bar.dart';
-import 'task_editor_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,25 +23,27 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late final TaskStore _store;
+  late final TaskActionController _actions;
+  final _filters = HomeFilterController();
   final _taskQuery = const TaskQueryService();
-  final _feedback = const TaskFeedbackService();
-  TaskView _view = TaskView.today;
-  TaskCategory? _category;
-  bool _showSearch = false;
-  String _query = '';
+  final _reminders = TaskReminderService();
 
   @override
   void initState() {
     super.initState();
-    _store = TaskStore(SharedPreferencesTaskRepository())
+    _store = TaskStore(SharedPreferencesTaskRepository(), _reminders)
       ..addListener(_refresh);
+    _actions = TaskActionController(_store, _reminders);
+    _filters.addListener(_refresh);
     _store.load();
   }
 
   @override
   void dispose() {
     _store.removeListener(_refresh);
+    _filters.removeListener(_refresh);
     _store.dispose();
+    _filters.dispose();
     super.dispose();
   }
 
@@ -51,133 +51,48 @@ class _HomeScreenState extends State<HomeScreen> {
     if (mounted) setState(() {});
   }
 
-  Future<void> _openEditor([TodoTask? task]) async {
-    ScaffoldMessenger.of(context).removeCurrentSnackBar();
-    final saved = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(
-        builder: (_) => TaskEditorScreen(task: task, onSave: _store.upsert),
-      ),
-    );
-    if (saved != true || !mounted) return;
-    _feedback.show(
-      context,
-      message: task == null ? 'Task created' : 'Changes saved',
-      icon: Icons.check_circle_outline_rounded,
-    );
-  }
-
-  Future<void> _deleteTask(TodoTask task) async {
-    final deleted = await showDialog<bool>(
+  Future<void> _openTimeFilter() async {
+    final filter = await showModalBottomSheet<TaskTimeFilter>(
       context: context,
-      barrierDismissible: false,
-      builder: (_) => TaskDeleteDialog(
-        title: task.title,
-        onDelete: () => _store.delete(task.id),
-      ),
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (_) => TaskTimeFilterSheet(initial: _filters.timeFilter),
     );
-    if (deleted == true) _showDeleted(task);
-  }
-
-  Future<void> _toggleTask(TodoTask task) async {
-    try {
-      await _store.toggle(task.id);
-    } catch (_) {
-      _showWriteError('Could not update task. Try again.');
-      return;
-    }
-    if (!mounted) return;
-    _feedback.show(
-      context,
-      message: task.isCompleted ? 'Task restored' : 'Task completed',
-      icon: task.isCompleted ? Icons.restore_rounded : Icons.task_alt_rounded,
-      onUndo: () => unawaited(_restoreTask(task)),
-    );
-  }
-
-  Future<void> _removeTask(TodoTask task) async {
-    try {
-      await _store.delete(task.id);
-    } catch (_) {
-      _showWriteError('Could not delete task. Try again.');
-      return;
-    }
-    _showDeleted(task);
-  }
-
-  Future<void> _restoreTask(TodoTask task) async {
-    try {
-      await _store.upsert(task);
-    } catch (_) {
-      _showWriteError('Could not restore task. Try again.');
-    }
-  }
-
-  void _showWriteError(String message) {
-    if (!mounted) return;
-    _feedback.show(
-      context,
-      message: message,
-      icon: Icons.error_outline_rounded,
-      iconColor: Theme.of(context).colorScheme.error,
-    );
-  }
-
-  void _showDeleted(TodoTask task) {
-    if (!mounted) return;
-    _feedback.show(
-      context,
-      message: 'Task deleted',
-      icon: Icons.delete_outline_rounded,
-      iconColor: Theme.of(context).colorScheme.error,
-      onUndo: () => unawaited(_restoreTask(task)),
-    );
-  }
-
-  void _selectView(TaskView view) => setState(() {
-    _view = view;
-    _category = null;
-    _query = '';
-    _showSearch = false;
-  });
-
-  void _handleSwipe(TodoTask task, DismissDirection direction) {
-    unawaited(
-      direction == DismissDirection.startToEnd
-          ? _toggleTask(task)
-          : _removeTask(task),
-    );
-    unawaited(HapticFeedback.selectionClick());
+    if (mounted && filter != null) _filters.applyTimeFilter(filter);
   }
 
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
+    final tasks = _store.tasks;
     final size = MediaQuery.sizeOf(context);
     final landscape = size.width >= 600 && size.width > size.height;
     final content = HomeContent(
-      view: _view,
+      view: _filters.view,
       landscape: landscape,
       tasks: _taskQuery.visibleTasks(
-        _store.tasks,
-        view: _view,
+        tasks,
+        view: _filters.view,
         now: now,
-        category: _category,
-        query: _query,
+        category: _filters.category,
+        query: _filters.query,
+        timeFilter: _filters.timeFilter,
       ),
-      progress: _taskQuery.progressForToday(_store.tasks, now),
-      selectedCategory: _category,
-      searchVisible: _showSearch,
-      onSearchToggle: () => setState(() {
-        _showSearch = !_showSearch;
-        if (!_showSearch) _query = '';
-      }),
-      onSearchChanged: (value) => setState(() => _query = value),
-      onCategoryChanged: (category) => setState(() => _category = category),
-      onAdd: () => _openEditor(),
-      onEdit: _openEditor,
-      onToggle: (task) => unawaited(_toggleTask(task)),
-      onDelete: _deleteTask,
-      onSwiped: _handleSwipe,
+      progress: _taskQuery.progressForToday(tasks, now),
+      selectedCategory: _filters.category,
+      searchVisible: _filters.searchVisible,
+      onSearchToggle: _filters.toggleSearch,
+      onSearchChanged: _filters.setQuery,
+      onCategoryChanged: _filters.setCategory,
+      timeFilter: _filters.timeFilter,
+      onTimeFilterOpen: _openTimeFilter,
+      onTimeFilterClear: _filters.clearTimeFilter,
+      onAdd: () => _actions.openEditor(context),
+      onEdit: (task) => _actions.openEditor(context, task),
+      onToggle: (task) => unawaited(_actions.toggle(context, task)),
+      onDelete: (task) => _actions.confirmDelete(context, task),
+      onSwiped: (task, direction) =>
+          _actions.handleSwipe(context, task, direction),
     );
     return Scaffold(
       body: SafeArea(
@@ -188,9 +103,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ? Row(
                 children: [
                   HomeSideBar(
-                    selected: _view,
-                    onSelect: _selectView,
-                    onAdd: () => _openEditor(),
+                    selected: _filters.view,
+                    onSelect: _filters.selectView,
+                    onAdd: () => _actions.openEditor(context),
                   ),
                   Expanded(child: content),
                 ],
@@ -200,9 +115,9 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: landscape
           ? null
           : HomeBottomBar(
-              selected: _view,
-              onSelect: _selectView,
-              onAdd: () => _openEditor(),
+              selected: _filters.view,
+              onSelect: _filters.selectView,
+              onAdd: () => _actions.openEditor(context),
             ),
     );
   }

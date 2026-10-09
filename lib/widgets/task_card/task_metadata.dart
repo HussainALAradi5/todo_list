@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../enums/task/task_category.dart';
 import '../../enums/task/task_priority.dart';
+import '../../enums/task/task_reminder.dart';
 import '../../extensions/task_category_style.dart';
+import '../../extensions/task_reminder_details.dart';
 import '../../models/todo_task.dart';
 import '../../theme/app_palette.dart';
 import '../../utils/date_format.dart';
@@ -31,6 +33,15 @@ class TaskMetadata extends StatelessWidget {
       ),
       if (task.priority != TaskPriority.normal)
         TaskPriorityBadge(priority: task.priority),
+      if (task.reminder != TaskReminder.none && !task.isCompleted)
+        Tooltip(
+          message: 'Reminder: ${task.reminder.label}',
+          child: Icon(
+            Icons.notifications_active_outlined,
+            size: 17,
+            color: context.palette.primary,
+          ),
+        ),
     ],
   );
 }

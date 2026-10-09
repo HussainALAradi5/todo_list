@@ -23,7 +23,11 @@ void main() {
     await tester.tap(find.byIcon(Icons.add_rounded).first);
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextFormField).first, 'Test the new UI');
-    await tester.ensureVisible(find.text('Urgent'));
+    await tester.scrollUntilVisible(
+      find.text('Urgent'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('Urgent'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Create task'));
@@ -163,6 +167,12 @@ void main() {
     const taskKey = ValueKey('swipe-starter-1');
     expect(find.byKey(taskKey), findsOneWidget);
 
+    await tester.ensureVisible(find.byKey(taskKey));
+    await tester.drag(
+      find.byType(CustomScrollView).first,
+      const Offset(0, -180),
+    );
+    await tester.pumpAndSettle();
     await tester.drag(find.byKey(taskKey), const Offset(500, 0));
     await tester.pumpAndSettle();
     expect(find.text('Task completed'), findsOneWidget);
@@ -171,6 +181,12 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(taskKey), findsOneWidget);
 
+    await tester.ensureVisible(find.byKey(taskKey));
+    await tester.drag(
+      find.byType(CustomScrollView).first,
+      const Offset(0, -180),
+    );
+    await tester.pumpAndSettle();
     await tester.drag(find.byKey(taskKey), const Offset(-500, 0));
     await tester.pumpAndSettle();
     expect(find.text('Task deleted'), findsOneWidget);

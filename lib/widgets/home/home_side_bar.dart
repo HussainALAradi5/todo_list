@@ -31,6 +31,13 @@ class HomeSideBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               HomeNavItem(
+                label: 'All',
+                icon: Icons.view_list_rounded,
+                selected: selected == TaskView.all,
+                onTap: () => onSelect(TaskView.all),
+              ),
+              const SizedBox(height: 7),
+              HomeNavItem(
                 label: 'Today',
                 icon: Icons.today_rounded,
                 selected: selected == TaskView.today,

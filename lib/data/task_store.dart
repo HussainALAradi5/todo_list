@@ -1,13 +1,16 @@
 import 'package:flutter/foundation.dart';
 
 import '../interfaces/task_repository.dart';
+import '../interfaces/task_reminder_scheduler.dart';
+import '../enums/task/task_reminder.dart';
 import '../models/todo_task.dart';
 import '../services/starter_task_service.dart';
 
 class TaskStore extends ChangeNotifier {
-  TaskStore(this._repository);
+  TaskStore(this._repository, [this._reminders]);
 
   final TaskRepository _repository;
+  final TaskReminderScheduler? _reminders;
   final _starterTasks = const StarterTaskService();
   final List<TodoTask> _tasks = [];
   Future<void> _pendingWrite = Future.value();
@@ -33,7 +36,7 @@ class TaskStore extends ChangeNotifier {
     }
   }
 
-  Future<void> upsert(TodoTask task) => _commit(() {
+  Future<void> upsert(TodoTask task) => _commit(task.id, () {
     final index = _tasks.indexWhere((item) => item.id == task.id);
     if (index == -1) {
       _tasks.add(task);
@@ -42,7 +45,7 @@ class TaskStore extends ChangeNotifier {
     }
   });
 
-  Future<void> toggle(String id) => _commit(() {
+  Future<void> toggle(String id) => _commit(id, () {
     final index = _tasks.indexWhere((task) => task.id == id);
     if (index == -1) return;
     final task = _tasks[index];
@@ -54,15 +57,18 @@ class TaskStore extends ChangeNotifier {
       category: task.category,
       priority: task.priority,
       isCompleted: !task.isCompleted,
+      reminder: task.reminder,
     );
   });
 
   Future<void> delete(String id) =>
-      _commit(() => _tasks.removeWhere((task) => task.id == id));
+      _commit(id, () => _tasks.removeWhere((task) => task.id == id));
 
-  Future<void> _commit(void Function() change) {
+  Future<void> _commit(String id, void Function() change) {
     final operation = _pendingWrite.then((_) async {
       final previous = List<TodoTask>.of(_tasks);
+      final oldIndex = previous.indexWhere((task) => task.id == id);
+      final oldTask = oldIndex < 0 ? null : previous[oldIndex];
       change();
       notifyListeners();
       try {
@@ -74,6 +80,21 @@ class TaskStore extends ChangeNotifier {
         notifyListeners();
         debugPrint('Could not save tasks: $error');
         rethrow;
+      }
+      final index = _tasks.indexWhere((task) => task.id == id);
+      final current = index < 0 ? null : _tasks[index];
+      if (_reminders != null &&
+          ((oldTask?.reminder ?? TaskReminder.none) != TaskReminder.none ||
+              (current?.reminder ?? TaskReminder.none) != TaskReminder.none)) {
+        try {
+          if (current == null) {
+            await _reminders.cancel(id);
+          } else {
+            await _reminders.sync(current);
+          }
+        } catch (error) {
+          debugPrint('Could not update task reminder: $error');
+        }
       }
     });
     _pendingWrite = operation.then<void>((_) {}, onError: (Object _) {});
