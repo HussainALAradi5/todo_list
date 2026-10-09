@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../theme/app_theme.dart';
+import '../../theme/app_palette.dart';
 
 class HomeNavItem extends StatelessWidget {
   const HomeNavItem({
@@ -28,14 +28,14 @@ class HomeNavItem extends StatelessWidget {
         children: [
           Icon(
             icon,
-            color: selected ? AppColors.purple : AppColors.muted,
+            color: selected ? context.palette.primary : context.palette.muted,
             size: 23,
           ),
           const SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(
-              color: selected ? AppColors.purple : AppColors.muted,
+              color: selected ? context.palette.primary : context.palette.muted,
               fontSize: 10,
               fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
             ),

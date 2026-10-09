@@ -4,8 +4,9 @@ import '../../enums/task/task_category.dart';
 import '../../enums/task/task_priority.dart';
 import '../../extensions/task_category_style.dart';
 import '../../models/todo_task.dart';
-import '../../theme/app_theme.dart';
+import '../../theme/app_palette.dart';
 import '../../utils/date_format.dart';
+import 'task_priority_badge.dart';
 
 class TaskMetadata extends StatelessWidget {
   const TaskMetadata({super.key, required this.task});
@@ -19,17 +20,17 @@ class TaskMetadata extends StatelessWidget {
     crossAxisAlignment: WrapCrossAlignment.center,
     children: [
       _CategoryBadge(category: task.category),
-      const Icon(Icons.schedule_rounded, size: 14, color: AppColors.muted),
+      Icon(Icons.schedule_rounded, size: 14, color: context.palette.muted),
       Text(
         '${dateLabel(task.dueAt, DateTime.now())}${task.dueAt == null ? '' : ' · ${timeLabel(task.dueAt, context)}'}',
-        style: const TextStyle(
-          color: AppColors.muted,
+        style: TextStyle(
+          color: context.palette.muted,
           fontSize: 12,
           fontWeight: FontWeight.w500,
         ),
       ),
-      if (task.priority == TaskPriority.high)
-        const Icon(Icons.flag_rounded, color: AppColors.coral, size: 15),
+      if (task.priority != TaskPriority.normal)
+        TaskPriorityBadge(priority: task.priority),
     ],
   );
 }
@@ -43,13 +44,13 @@ class _CategoryBadge extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
     decoration: BoxDecoration(
-      color: category.color.withValues(alpha: .12),
+      color: category.color(context).withValues(alpha: .12),
       borderRadius: BorderRadius.circular(8),
     ),
     child: Text(
       category.label,
       style: TextStyle(
-        color: category.color,
+        color: category.color(context),
         fontSize: 11,
         fontWeight: FontWeight.w700,
       ),

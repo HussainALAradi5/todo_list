@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../extensions/task_progress_values.dart';
 import '../../models/task_progress.dart';
-import '../../theme/app_theme.dart';
+import '../../theme/app_palette.dart';
 
 class ProgressCard extends StatelessWidget {
   const ProgressCard({super.key, required this.progress});
@@ -13,7 +13,7 @@ class ProgressCard extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.all(23),
     decoration: BoxDecoration(
-      color: AppColors.ink,
+      color: context.palette.progressCard,
       borderRadius: BorderRadius.circular(26),
     ),
     child: Row(
@@ -22,10 +22,10 @@ class ProgressCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'TODAY’S PROGRESS',
                 style: TextStyle(
-                  color: Color(0xFFA9ADBD),
+                  color: context.palette.progressMuted,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 1.2,
                   fontSize: 11,
@@ -36,8 +36,8 @@ class ProgressCard extends StatelessWidget {
                 progress.total == 0
                     ? 'A fresh start'
                     : '${progress.completed} of ${progress.total} done',
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: context.palette.progressText,
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -.6,
@@ -50,7 +50,10 @@ class ProgressCard extends StatelessWidget {
                     : progress.fraction == 1
                     ? 'Everything is checked off. Great work!'
                     : 'Keep the momentum going!',
-                style: const TextStyle(color: Color(0xFFA9ADBD), fontSize: 13),
+                style: TextStyle(
+                  color: context.palette.progressMuted,
+                  fontSize: 13,
+                ),
               ),
             ],
           ),
@@ -77,8 +80,8 @@ class ProgressCard extends StatelessWidget {
                 ),
                 Text(
                   '${(value * 100).round()}%',
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: context.palette.progressText,
                     fontSize: 17,
                     fontWeight: FontWeight.w800,
                   ),

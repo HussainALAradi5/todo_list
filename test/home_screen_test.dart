@@ -23,6 +23,9 @@ void main() {
     await tester.tap(find.byIcon(Icons.add_rounded).first);
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextFormField).first, 'Test the new UI');
+    await tester.ensureVisible(find.text('Urgent'));
+    await tester.tap(find.text('Urgent'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Create task'));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
@@ -35,6 +38,10 @@ void main() {
     final newTaskCard = find.ancestor(
       of: find.text('Test the new UI'),
       matching: find.byType(TaskCard),
+    );
+    expect(
+      find.descendant(of: newTaskCard, matching: find.text('Urgent')),
+      findsOneWidget,
     );
     await tester.tap(
       find.descendant(

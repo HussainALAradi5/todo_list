@@ -4,9 +4,10 @@ import '../constants/layout_constants.dart';
 import '../enums/task/task_category.dart';
 import '../enums/task/task_priority.dart';
 import '../models/todo_task.dart';
-import '../theme/app_theme.dart';
+import '../theme/app_palette.dart';
 import '../widgets/task_editor/task_category_field.dart';
 import '../widgets/task_editor/task_due_date_field.dart';
+import '../widgets/task_editor/task_editor_layout.dart';
 import '../widgets/task_editor/task_priority_field.dart';
 import '../widgets/task_editor/task_text_fields.dart';
 
@@ -60,50 +61,49 @@ class _TaskEditorScreenState extends State<TaskEditorScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      backgroundColor: AppColors.background,
-      title: Text(widget.task == null ? 'New task' : 'Edit task'),
-      centerTitle: true,
-    ),
-    body: SafeArea(
-      child: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(
-                  LayoutConstants.contentPadding,
-                  24,
-                  LayoutConstants.contentPadding,
-                  20,
+  Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+    final landscape = size.width >= 600 && size.width > size.height;
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: context.palette.background,
+        title: Text(widget.task == null ? 'New task' : 'Edit task'),
+        centerTitle: true,
+        actions: landscape
+            ? [
+                TextButton(
+                  onPressed: _save,
+                  child: Text(
+                    'Save',
+                    style: TextStyle(color: context.palette.primary),
+                  ),
                 ),
-                children: [
-                  TaskTextFields(
-                    titleController: _titleController,
-                    notesController: _notesController,
-                    autofocus: widget.task == null,
-                  ),
-                  const SizedBox(height: 28),
-                  TaskCategoryField(
-                    value: _category,
-                    onChanged: (value) => setState(() => _category = value),
-                  ),
-                  const SizedBox(height: 28),
-                  TaskDueDateField(
-                    value: _dueAt,
-                    onChanged: (value) => setState(() => _dueAt = value),
-                  ),
-                  const SizedBox(height: 28),
-                  TaskPriorityField(
-                    value: _priority,
-                    onChanged: (value) => setState(() => _priority = value),
-                  ),
-                ],
-              ),
+                const SizedBox(width: 8),
+              ]
+            : null,
+      ),
+      body: SafeArea(
+        child: Form(
+          key: _formKey,
+          child: TaskEditorLayout(
+            textFields: TaskTextFields(
+              titleController: _titleController,
+              notesController: _notesController,
+              autofocus: widget.task == null,
             ),
-            Padding(
+            categoryField: TaskCategoryField(
+              value: _category,
+              onChanged: (value) => setState(() => _category = value),
+            ),
+            dueDateField: TaskDueDateField(
+              value: _dueAt,
+              onChanged: (value) => setState(() => _dueAt = value),
+            ),
+            priorityField: TaskPriorityField(
+              value: _priority,
+              onChanged: (value) => setState(() => _priority = value),
+            ),
+            saveButton: Padding(
               padding: const EdgeInsets.fromLTRB(
                 LayoutConstants.contentPadding,
                 10,
@@ -113,7 +113,8 @@ class _TaskEditorScreenState extends State<TaskEditorScreen> {
               child: FilledButton(
                 onPressed: _save,
                 style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.purple,
+                  backgroundColor: context.palette.primary,
+                  foregroundColor: context.palette.background,
                   minimumSize: const Size.fromHeight(56),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18),
@@ -128,9 +129,9 @@ class _TaskEditorScreenState extends State<TaskEditorScreen> {
                 ),
               ),
             ),
-          ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }

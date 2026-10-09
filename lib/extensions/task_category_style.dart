@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../enums/task/task_category.dart';
+import '../theme/app_palette.dart';
 import '../theme/app_theme.dart';
 
 extension TaskCategoryStyle on TaskCategory {
@@ -16,8 +17,8 @@ extension TaskCategoryStyle on TaskCategory {
     TaskCategory.wellness => Icons.favorite_outline_rounded,
   };
 
-  Color get color => switch (this) {
-    TaskCategory.work => AppColors.purple,
+  Color color(BuildContext context) => switch (this) {
+    TaskCategory.work => context.palette.primary,
     TaskCategory.personal => AppColors.coral,
     TaskCategory.wellness => AppColors.mint,
   };

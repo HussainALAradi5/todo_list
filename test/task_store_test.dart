@@ -21,7 +21,7 @@ void main() {
       notes: 'Keep it short',
       dueAt: DateTime(2026, 10, 10, 9),
       category: TaskCategory.work,
-      priority: TaskPriority.high,
+      priority: TaskPriority.urgent,
     );
     await store.upsert(task);
     await store.upsert(
@@ -42,7 +42,7 @@ void main() {
     expect(savedTask.title, 'Write a better plan');
     expect(savedTask.isCompleted, isTrue);
     expect(savedTask.category, TaskCategory.work);
-    expect(savedTask.priority, TaskPriority.high);
+    expect(savedTask.priority, TaskPriority.urgent);
     expect(savedTask.dueAt, DateTime(2026, 10, 10, 9));
 
     await restored.delete(task.id);

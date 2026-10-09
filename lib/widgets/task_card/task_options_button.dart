@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../enums/task/task_action.dart';
-import '../../theme/app_theme.dart';
+import '../../theme/app_palette.dart';
 
 class TaskOptionsButton extends StatelessWidget {
   const TaskOptionsButton({
@@ -15,7 +15,7 @@ class TaskOptionsButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => PopupMenuButton<TaskAction>(
-    icon: const Icon(Icons.more_horiz_rounded, color: AppColors.muted),
+    icon: Icon(Icons.more_horiz_rounded, color: context.palette.muted),
     tooltip: 'Task options',
     onSelected: (action) => switch (action) {
       TaskAction.edit => onEdit(),

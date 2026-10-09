@@ -59,7 +59,7 @@ void main() {
     expect(progress.fraction, .25);
   });
 
-  test('filters by category and search and sorts high priority first', () {
+  test('filters by category and sorts urgent, high, then normal', () {
     final tasks = [
       task('Call home', category: TaskCategory.personal),
       task('Write report', category: TaskCategory.work),
@@ -67,6 +67,11 @@ void main() {
         'Review report',
         category: TaskCategory.work,
         priority: TaskPriority.high,
+      ),
+      task(
+        'Send report',
+        category: TaskCategory.work,
+        priority: TaskPriority.urgent,
       ),
     ];
 
@@ -80,7 +85,30 @@ void main() {
             query: ' REPORT ',
           )
           .map((item) => item.id),
-      ['Review report', 'Write report'],
+      ['Send report', 'Review report', 'Write report'],
+    );
+  });
+
+  test('sorts matching priorities by due date', () {
+    final tasks = [
+      task(
+        'later',
+        dueAt: DateTime(2026, 10, 9, 18),
+        priority: TaskPriority.urgent,
+      ),
+      task('normal', dueAt: DateTime(2026, 10, 9, 8)),
+      task(
+        'sooner',
+        dueAt: DateTime(2026, 10, 9, 9),
+        priority: TaskPriority.urgent,
+      ),
+    ];
+
+    expect(
+      service
+          .visibleTasks(tasks, view: TaskView.today, now: now)
+          .map((item) => item.id),
+      ['sooner', 'later', 'normal'],
     );
   });
 }

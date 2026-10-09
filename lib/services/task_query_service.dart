@@ -1,6 +1,5 @@
 import '../enums/navigation/task_view.dart';
 import '../enums/task/task_category.dart';
-import '../enums/task/task_priority.dart';
 import '../models/task_progress.dart';
 import '../models/todo_task.dart';
 
@@ -34,7 +33,7 @@ class TaskQueryService {
 
     results.sort((first, second) {
       if (view != TaskView.completed && first.priority != second.priority) {
-        return first.priority == TaskPriority.high ? -1 : 1;
+        return second.priority.index.compareTo(first.priority.index);
       }
       if (first.dueAt == null) return second.dueAt == null ? 0 : 1;
       if (second.dueAt == null) return -1;

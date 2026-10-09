@@ -6,10 +6,12 @@ A clean, responsive todo app for Android and iPhone, built with Flutter.
 
 - Today, Upcoming, and Completed views
 - Add, edit, complete, and delete tasks
-- Categories, priority, notes, due dates, and times
+- Categories, Normal/High/Urgent priority, notes, due dates, and times
 - Search and category filters
 - Swipe right to complete or restore, swipe left to delete, and undo either action
 - Animated progress feedback
+- Persistent light and dark mode toggle
+- Responsive portrait and landscape layouts for phones
 - Local task storage with `shared_preferences`
 
 The app opens with a few editable example tasks on first launch. After that, it restores your saved tasks, including an empty list if you delete them all.
@@ -19,17 +21,17 @@ The app opens with a few editable example tasks on first launch. After that, it 
 ```text
 lib/
   constants/  Shared layout values and storage keys
-  data/       SharedPreferences adapter and task state
+  data/       SharedPreferences adapters and app state
   enums/      Navigation and task enum subfolders
-  extensions/ Category presentation and derived progress values
-  interfaces/ Storage contract
+  extensions/ Category and priority presentation, derived progress values
+  interfaces/ Task and theme storage contracts
   mappers/    JSON conversion for task storage
   models/     Task and progress data only
   screens/    Dashboard and task editor
   services/   Task queries and first-launch examples
-  theme/      Colors and Material theme
+  theme/      Light/dark palettes and Material themes
   utils/      Date formatting
-  widgets/    home/, task_card/, and task_editor/ components
+  widgets/    home/, task_card/, task_editor/, and theme/ components
 ```
 
 ## Run

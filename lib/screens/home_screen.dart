@@ -11,6 +11,7 @@ import '../models/todo_task.dart';
 import '../services/task_query_service.dart';
 import '../widgets/home/home_bottom_bar.dart';
 import '../widgets/home/home_content.dart';
+import '../widgets/home/home_side_bar.dart';
 import 'task_editor_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -114,42 +115,58 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
+    final size = MediaQuery.sizeOf(context);
+    final landscape = size.width >= 600 && size.width > size.height;
+    final content = HomeContent(
+      view: _view,
+      landscape: landscape,
+      tasks: _taskQuery.visibleTasks(
+        _store.tasks,
+        view: _view,
+        now: now,
+        category: _category,
+        query: _query,
+      ),
+      progress: _taskQuery.progressForToday(_store.tasks, now),
+      selectedCategory: _category,
+      searchVisible: _showSearch,
+      onSearchToggle: () => setState(() {
+        _showSearch = !_showSearch;
+        if (!_showSearch) _query = '';
+      }),
+      onSearchChanged: (value) => setState(() => _query = value),
+      onCategoryChanged: (category) => setState(() => _category = category),
+      onAdd: () => _openEditor(),
+      onEdit: _openEditor,
+      onToggle: _store.toggle,
+      onDelete: _deleteTask,
+      onSwiped: _handleSwipe,
+    );
     return Scaffold(
       body: SafeArea(
-        bottom: false,
+        bottom: landscape,
         child: _store.isLoading
             ? const Center(child: CircularProgressIndicator())
-            : HomeContent(
-                view: _view,
-                tasks: _taskQuery.visibleTasks(
-                  _store.tasks,
-                  view: _view,
-                  now: now,
-                  category: _category,
-                  query: _query,
-                ),
-                progress: _taskQuery.progressForToday(_store.tasks, now),
-                selectedCategory: _category,
-                searchVisible: _showSearch,
-                onSearchToggle: () => setState(() {
-                  _showSearch = !_showSearch;
-                  if (!_showSearch) _query = '';
-                }),
-                onSearchChanged: (value) => setState(() => _query = value),
-                onCategoryChanged: (category) =>
-                    setState(() => _category = category),
-                onAdd: () => _openEditor(),
-                onEdit: _openEditor,
-                onToggle: _store.toggle,
-                onDelete: _deleteTask,
-                onSwiped: _handleSwipe,
-              ),
+            : landscape
+            ? Row(
+                children: [
+                  HomeSideBar(
+                    selected: _view,
+                    onSelect: _selectView,
+                    onAdd: () => _openEditor(),
+                  ),
+                  Expanded(child: content),
+                ],
+              )
+            : content,
       ),
-      bottomNavigationBar: HomeBottomBar(
-        selected: _view,
-        onSelect: _selectView,
-        onAdd: () => _openEditor(),
-      ),
+      bottomNavigationBar: landscape
+          ? null
+          : HomeBottomBar(
+              selected: _view,
+              onSelect: _selectView,
+              onAdd: () => _openEditor(),
+            ),
     );
   }
 }

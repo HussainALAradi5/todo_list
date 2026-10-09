@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../enums/navigation/task_view.dart';
-import '../../theme/app_theme.dart';
+import '../../theme/app_palette.dart';
 
 class EmptyTaskState extends StatelessWidget {
   const EmptyTaskState({super.key, required this.view, required this.onAdd});
@@ -13,21 +13,21 @@ class EmptyTaskState extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 38),
     decoration: BoxDecoration(
-      color: Colors.white,
-      border: Border.all(color: AppColors.border),
+      color: context.palette.surface,
+      border: Border.all(color: context.palette.border),
       borderRadius: BorderRadius.circular(22),
     ),
     child: Column(
       children: [
         Container(
           padding: const EdgeInsets.all(15),
-          decoration: const BoxDecoration(
-            color: AppColors.purpleSoft,
+          decoration: BoxDecoration(
+            color: context.palette.primarySoft,
             shape: BoxShape.circle,
           ),
-          child: const Icon(
+          child: Icon(
             Icons.task_alt_rounded,
-            color: AppColors.purple,
+            color: context.palette.primary,
             size: 31,
           ),
         ),
@@ -36,17 +36,17 @@ class EmptyTaskState extends StatelessWidget {
           view == TaskView.completed
               ? 'Nothing completed yet'
               : 'All clear here',
-          style: const TextStyle(
-            color: AppColors.ink,
+          style: TextStyle(
+            color: context.palette.ink,
             fontSize: 17,
             fontWeight: FontWeight.w800,
           ),
         ),
         const SizedBox(height: 5),
-        const Text(
+        Text(
           'A little space for what matters next.',
           textAlign: TextAlign.center,
-          style: TextStyle(color: AppColors.muted),
+          style: TextStyle(color: context.palette.muted),
         ),
         const SizedBox(height: 16),
         TextButton.icon(

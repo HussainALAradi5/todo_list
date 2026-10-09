@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../theme/app_theme.dart';
+import '../../theme/app_palette.dart';
 import '../../utils/date_format.dart';
 import 'field_label.dart';
 
@@ -60,10 +60,10 @@ class TaskDueDateField extends StatelessWidget {
               ),
               style: OutlinedButton.styleFrom(
                 alignment: Alignment.centerLeft,
-                foregroundColor: AppColors.ink,
-                backgroundColor: Colors.white,
+                foregroundColor: context.palette.ink,
+                backgroundColor: context.palette.surface,
                 minimumSize: const Size.fromHeight(56),
-                side: const BorderSide(color: AppColors.border),
+                side: BorderSide(color: context.palette.border),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18),
                 ),

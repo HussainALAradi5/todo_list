@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../constants/layout_constants.dart';
 import '../../models/todo_task.dart';
-import '../../theme/app_theme.dart';
+import '../../theme/app_palette.dart';
 import 'task_checkbox.dart';
 import 'task_metadata.dart';
 import 'task_options_button.dart';
@@ -25,9 +25,9 @@ class TaskCard extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     margin: const EdgeInsets.only(bottom: LayoutConstants.taskSpacing),
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: context.palette.surface,
       borderRadius: BorderRadius.circular(LayoutConstants.taskRadius),
-      border: Border.all(color: AppColors.border),
+      border: Border.all(color: context.palette.border),
       boxShadow: const [
         BoxShadow(
           color: Color(0x080E1935),
@@ -58,8 +58,8 @@ class TaskCard extends StatelessWidget {
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                         color: task.isCompleted
-                            ? AppColors.muted
-                            : AppColors.ink,
+                            ? context.palette.muted
+                            : context.palette.ink,
                         decoration: task.isCompleted
                             ? TextDecoration.lineThrough
                             : null,
@@ -71,8 +71,8 @@ class TaskCard extends StatelessWidget {
                         task.notes,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: AppColors.muted,
+                        style: TextStyle(
+                          color: context.palette.muted,
                           fontSize: 13,
                         ),
                       ),

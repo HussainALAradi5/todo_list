@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../enums/navigation/task_view.dart';
-import '../../theme/app_theme.dart';
+import '../../theme/app_palette.dart';
 import 'home_nav_item.dart';
 
 class HomeBottomBar extends StatelessWidget {
@@ -18,9 +18,9 @@ class HomeBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    decoration: const BoxDecoration(
-      color: Colors.white,
-      border: Border(top: BorderSide(color: AppColors.border)),
+    decoration: BoxDecoration(
+      color: context.palette.surface,
+      border: Border(top: BorderSide(color: context.palette.border)),
     ),
     child: SafeArea(
       top: false,
@@ -48,8 +48,8 @@ class HomeBottomBar extends StatelessWidget {
                 onPressed: onAdd,
                 icon: const Icon(Icons.add_rounded, size: 28),
                 style: IconButton.styleFrom(
-                  backgroundColor: AppColors.purple,
-                  foregroundColor: Colors.white,
+                  backgroundColor: context.palette.primary,
+                  foregroundColor: context.palette.background,
                   fixedSize: const Size(53, 53),
                 ),
               ),

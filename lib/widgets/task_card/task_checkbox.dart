@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../theme/app_theme.dart';
+import '../../theme/app_palette.dart';
 
 class TaskCheckbox extends StatelessWidget {
   const TaskCheckbox({
@@ -25,15 +25,21 @@ class TaskCheckbox extends StatelessWidget {
         height: 25,
         margin: const EdgeInsets.only(top: 2),
         decoration: BoxDecoration(
-          color: isCompleted ? AppColors.purple : Colors.transparent,
+          color: isCompleted ? context.palette.primary : Colors.transparent,
           border: Border.all(
-            color: isCompleted ? AppColors.purple : const Color(0xFFCED2DC),
+            color: isCompleted
+                ? context.palette.primary
+                : context.palette.checkboxBorder,
             width: 1.8,
           ),
           borderRadius: BorderRadius.circular(9),
         ),
         child: isCompleted
-            ? const Icon(Icons.check_rounded, size: 18, color: Colors.white)
+            ? Icon(
+                Icons.check_rounded,
+                size: 18,
+                color: context.palette.background,
+              )
             : null,
       ),
     ),

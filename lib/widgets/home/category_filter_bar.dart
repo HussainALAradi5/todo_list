@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../enums/task/task_category.dart';
 import '../../extensions/task_category_style.dart';
-import '../../theme/app_theme.dart';
+import '../../theme/app_palette.dart';
 
 class CategoryFilterBar extends StatelessWidget {
   const CategoryFilterBar({
@@ -53,10 +53,14 @@ class _FilterChip extends StatelessWidget {
     child: ActionChip(
       label: Text(label),
       onPressed: onTap,
-      backgroundColor: selected ? AppColors.purple : Colors.white,
-      side: BorderSide(color: selected ? AppColors.purple : AppColors.border),
+      backgroundColor: selected
+          ? context.palette.primary
+          : context.palette.surface,
+      side: BorderSide(
+        color: selected ? context.palette.primary : context.palette.border,
+      ),
       labelStyle: TextStyle(
-        color: selected ? Colors.white : AppColors.muted,
+        color: selected ? context.palette.background : context.palette.muted,
         fontWeight: FontWeight.w700,
         fontSize: 13,
       ),

@@ -4,7 +4,7 @@ import '../../enums/navigation/task_view.dart';
 import '../../enums/task/task_category.dart';
 import '../../extensions/task_progress_values.dart';
 import '../../models/task_progress.dart';
-import '../../theme/app_theme.dart';
+import '../../theme/app_palette.dart';
 import 'category_filter_bar.dart';
 import 'home_top_bar.dart';
 import 'progress_card.dart';
@@ -50,7 +50,7 @@ class HomeOverview extends StatelessWidget {
               : '${progress.remaining} task${progress.remaining == 1 ? '' : 's'} on your plate today.',
         TaskView.upcoming => 'A clear view of what’s ahead.',
         TaskView.completed => 'Every small step adds up.',
-      }, style: const TextStyle(color: AppColors.muted, fontSize: 15)),
+      }, style: TextStyle(color: context.palette.muted, fontSize: 15)),
       if (view == TaskView.today) ...[
         const SizedBox(height: 27),
         ProgressCard(progress: progress),
@@ -84,8 +84,8 @@ class HomeOverview extends StatelessWidget {
           const SizedBox(width: 12),
           Text(
             '$taskCount ${taskCount == 1 ? 'task' : 'tasks'}',
-            style: const TextStyle(
-              color: AppColors.muted,
+            style: TextStyle(
+              color: context.palette.muted,
               fontSize: 13,
               fontWeight: FontWeight.w600,
             ),
@@ -102,7 +102,7 @@ class HomeOverview extends StatelessWidget {
         view == TaskView.completed
             ? 'Swipe right to restore · left to delete'
             : 'Swipe right to finish · left to delete',
-        style: const TextStyle(color: AppColors.muted, fontSize: 11),
+        style: TextStyle(color: context.palette.muted, fontSize: 11),
       ),
       const SizedBox(height: 17),
     ],

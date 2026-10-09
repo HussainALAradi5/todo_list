@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../enums/task/task_category.dart';
 import '../../extensions/task_category_style.dart';
-import '../../theme/app_theme.dart';
+import '../../theme/app_palette.dart';
 import 'field_label.dart';
 
 class TaskCategoryField extends StatelessWidget {
@@ -31,18 +31,24 @@ class TaskCategoryField extends StatelessWidget {
             avatar: Icon(
               category.icon,
               size: 17,
-              color: selected ? Colors.white : category.color,
+              color: selected
+                  ? context.palette.background
+                  : category.color(context),
             ),
             selected: selected,
             onSelected: (_) => onChanged(category),
-            selectedColor: AppColors.purple,
-            backgroundColor: Colors.white,
+            selectedColor: context.palette.primary,
+            backgroundColor: context.palette.surface,
             labelStyle: TextStyle(
-              color: selected ? Colors.white : AppColors.ink,
+              color: selected
+                  ? context.palette.background
+                  : context.palette.ink,
               fontWeight: FontWeight.w600,
             ),
             side: BorderSide(
-              color: selected ? AppColors.purple : AppColors.border,
+              color: selected
+                  ? context.palette.primary
+                  : context.palette.border,
             ),
             showCheckmark: false,
           );
