@@ -13,22 +13,15 @@ class TaskQueryService {
   List<TodoTask> visibleTasks(
     List<TodoTask> tasks, {
     required TaskView view,
-    required DateTime now,
     TaskCategory? category,
     String query = '',
     TaskTimeFilter? timeFilter,
   }) {
-    final today = _day(now);
     final search = query.trim().toLowerCase();
     final results = tasks.where((task) {
       final inView = switch (view) {
-        TaskView.all => true,
-        TaskView.today => !task.isCompleted && _isDueBy(task, today),
-        TaskView.upcoming =>
-          !task.isCompleted &&
-              task.dueAt != null &&
-              _day(task.dueAt!).isAfter(today),
-        TaskView.completed => task.isCompleted,
+        TaskView.tasks => !task.isCompleted,
+        TaskView.done => task.isCompleted,
       };
       return inView &&
           _timeFilter.matches(task.dueAt, timeFilter) &&
@@ -39,10 +32,7 @@ class TaskQueryService {
     }).toList();
 
     results.sort((first, second) {
-      if (view == TaskView.all && first.isCompleted != second.isCompleted) {
-        return first.isCompleted ? 1 : -1;
-      }
-      if (view != TaskView.completed && first.priority != second.priority) {
+      if (view == TaskView.tasks && first.priority != second.priority) {
         return second.priority.index.compareTo(first.priority.index);
       }
       if (first.dueAt == null) return second.dueAt == null ? 0 : 1;

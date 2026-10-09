@@ -10,7 +10,7 @@ class HomeFilterController extends ChangeNotifier {
   Timer? _searchTimer;
   static const searchDelay = Duration(milliseconds: 160);
 
-  TaskView view = TaskView.today;
+  TaskView view = TaskView.tasks;
   TaskCategory? category;
   TaskTimeFilter? timeFilter;
   bool searchVisible = false;
@@ -57,7 +57,6 @@ class HomeFilterController extends ChangeNotifier {
         value.fromMinute != null ||
         value.toMinute != null;
     timeFilter = active ? value : null;
-    if (active && view != TaskView.completed) view = TaskView.all;
     notifyListeners();
   }
 

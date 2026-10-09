@@ -10,7 +10,6 @@ import 'package:todo_list/widgets/filters/task_time_filter_sheet.dart';
 
 void main() {
   const query = TaskQueryService();
-  final now = DateTime(2026, 10, 10);
   final tasks = [
     TodoTask(id: 'morning', title: 'Morning', dueAt: DateTime(2026, 10, 10, 9)),
     TodoTask(
@@ -28,7 +27,7 @@ void main() {
 
   test('filters by day, hour, both, and across midnight', () {
     List<String> ids(TaskTimeFilter filter) => query
-        .visibleTasks(tasks, view: TaskView.all, now: now, timeFilter: filter)
+        .visibleTasks(tasks, view: TaskView.tasks, timeFilter: filter)
         .map((task) => task.id)
         .toList();
 
@@ -55,7 +54,38 @@ void main() {
     );
   });
 
-  testWidgets('filter sheet applies a quick day on a phone', (tester) async {
+  test('date filter applies within Tasks or Done, never across status', () {
+    final mixed = [
+      ...tasks,
+      TodoTask(
+        id: 'done-evening',
+        title: 'Done evening',
+        dueAt: DateTime(2026, 10, 11, 18),
+        isCompleted: true,
+      ),
+    ];
+    final filter = TaskTimeFilter(
+      fromDay: DateTime(2026, 10, 11),
+      toDay: DateTime(2026, 10, 11),
+    );
+
+    expect(
+      query
+          .visibleTasks(mixed, view: TaskView.tasks, timeFilter: filter)
+          .map((task) => task.id),
+      ['evening'],
+    );
+    expect(
+      query
+          .visibleTasks(mixed, view: TaskView.done, timeFilter: filter)
+          .map((task) => task.id),
+      ['done-evening'],
+    );
+  });
+
+  testWidgets('Tasks filter has only date and time range controls', (
+    tester,
+  ) async {
     SharedPreferences.setMockInitialValues({});
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
@@ -67,11 +97,46 @@ void main() {
     await tester.tap(find.text('Date & time'));
     await tester.pumpAndSettle();
     expect(find.byType(TaskTimeFilterSheet), findsOneWidget);
-    await tester.tap(find.text('Today').last);
+    expect(find.text('Filter tasks'), findsOneWidget);
+    expect(find.text('Due today'), findsNothing);
+    expect(find.text('Due tomorrow'), findsNothing);
+    await tester.tap(find.text('From day'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Show tasks'));
     await tester.pumpAndSettle();
     expect(find.text('Filtered'), findsOneWidget);
-    expect(find.text('Everything in view.'), findsOneWidget);
+    expect(find.text('Your tasks.'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Done date filter keeps completed tasks separate', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(const TodoApp());
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Done'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Date & time'));
+    await tester.pumpAndSettle();
+    expect(find.text('Filter done tasks'), findsOneWidget);
+    expect(find.text('Due today'), findsNothing);
+    expect(find.text('Due tomorrow'), findsNothing);
+    await tester.tap(find.text('From day'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Show done'));
+    await tester.pumpAndSettle();
+    expect(find.text('Nicely done.'), findsOneWidget);
+    expect(find.text('Filtered'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

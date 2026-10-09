@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../enums/navigation/task_view.dart';
 import '../../enums/task/task_category.dart';
-import '../../extensions/task_progress_values.dart';
 import '../../models/task_progress.dart';
 import '../../models/task_time_filter.dart';
 import '../../theme/app_palette.dart';
@@ -46,22 +45,15 @@ class HomeOverview extends StatelessWidget {
       HomeTopBar(onSearch: onSearchToggle, searchActive: searchVisible),
       const SizedBox(height: 32),
       Text(switch (view) {
-        TaskView.all => 'Everything in view.',
-        TaskView.today => 'Make today count.',
-        TaskView.upcoming => 'Coming up.',
-        TaskView.completed => 'Nicely done.',
+        TaskView.tasks => 'Your tasks.',
+        TaskView.done => 'Nicely done.',
       }, style: Theme.of(context).textTheme.headlineLarge),
       const SizedBox(height: 6),
       Text(switch (view) {
-        TaskView.all => 'Find what needs your attention.',
-        TaskView.today =>
-          progress.remaining == 0
-              ? 'You’re all caught up for today.'
-              : '${progress.remaining} task${progress.remaining == 1 ? '' : 's'} on your plate today.',
-        TaskView.upcoming => 'A clear view of what’s ahead.',
-        TaskView.completed => 'Every small step adds up.',
+        TaskView.tasks => 'Everything you’re working on, in one place.',
+        TaskView.done => 'Every small step adds up.',
       }, style: TextStyle(color: context.palette.muted, fontSize: 15)),
-      if (view == TaskView.today) ...[
+      if (view == TaskView.tasks && progress.total > 0) ...[
         const SizedBox(height: 27),
         ProgressCard(progress: progress),
       ],
@@ -82,10 +74,8 @@ class HomeOverview extends StatelessWidget {
           Expanded(
             child: Text(
               switch (view) {
-                TaskView.all => 'All tasks',
-                TaskView.today => 'Your tasks',
-                TaskView.upcoming => 'Upcoming tasks',
-                TaskView.completed => 'Completed tasks',
+                TaskView.tasks => 'Tasks in progress',
+                TaskView.done => 'Completed tasks',
               },
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -116,9 +106,8 @@ class HomeOverview extends StatelessWidget {
       ),
       const SizedBox(height: 8),
       Text(switch (view) {
-        TaskView.completed => 'Swipe right to restore · left to delete',
-        TaskView.all => 'Swipe right to finish or restore · left to delete',
-        _ => 'Swipe right to finish · left to delete',
+        TaskView.done => 'Swipe right to restore · left to delete',
+        TaskView.tasks => 'Swipe right to finish · left to delete',
       }, style: TextStyle(color: context.palette.muted, fontSize: 11)),
       const SizedBox(height: 17),
     ],

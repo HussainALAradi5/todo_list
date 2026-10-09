@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../../enums/navigation/task_view.dart';
 import '../../models/task_time_filter.dart';
 import 'task_time_filter_form.dart';
 
 class TaskTimeFilterSheet extends StatefulWidget {
-  const TaskTimeFilterSheet({super.key, this.initial});
+  const TaskTimeFilterSheet({super.key, required this.view, this.initial});
 
+  final TaskView view;
   final TaskTimeFilter? initial;
 
   @override
@@ -62,15 +64,6 @@ class _TaskTimeFilterSheetState extends State<TaskTimeFilterSheet> {
     });
   }
 
-  void _quickDay(int offset) {
-    final now = DateTime.now();
-    final day = DateTime(now.year, now.month, now.day + offset);
-    setState(() {
-      _fromDay = day;
-      _toDay = day;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final invalidDays =
@@ -88,12 +81,12 @@ class _TaskTimeFilterSheetState extends State<TaskTimeFilterSheet> {
               maxHeight: media.size.height * .88,
             ),
             child: TaskTimeFilterForm(
+              view: widget.view,
               fromDay: _fromDay,
               toDay: _toDay,
               fromMinute: _fromMinute,
               toMinute: _toMinute,
               invalidDays: invalidDays,
-              onQuickDay: _quickDay,
               onPickDay: _pickDay,
               onPickTime: _pickTime,
               onClear: () => Navigator.pop(context, const TaskTimeFilter()),

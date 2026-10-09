@@ -18,7 +18,7 @@ void main() {
 
     await tester.pumpWidget(const TodoApp());
     await tester.pumpAndSettle();
-    expect(find.text('Make today count.'), findsOneWidget);
+    expect(find.text('Your tasks.'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.add_rounded).first);
     await tester.pumpAndSettle();
@@ -67,12 +67,17 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+    expect(find.text('Test the new UI'), findsNothing);
     await tester.tap(find.text('Done'));
     await tester.pumpAndSettle();
     expect(find.text('Test the new UI'), findsOneWidget);
     await tester.tap(find.bySemanticsLabel('Mark incomplete').last);
     await tester.pumpAndSettle();
     expect(find.text('Task restored'), findsOneWidget);
+    expect(find.text('Test the new UI'), findsNothing);
+    await tester.tap(find.text('Tasks'));
+    await tester.pumpAndSettle();
+    expect(find.text('Test the new UI'), findsOneWidget);
   });
 
   testWidgets('edit and confirmed delete show feedback with Undo', (

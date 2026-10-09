@@ -21,7 +21,7 @@ class CategoryFilterBar extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       children: [
         _FilterChip(
-          label: 'All',
+          label: 'All categories',
           selected: selected == null,
           onTap: () => onChanged(null),
         ),

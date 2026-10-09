@@ -31,31 +31,17 @@ class HomeSideBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               HomeNavItem(
-                label: 'All',
+                label: 'Tasks',
                 icon: Icons.view_list_rounded,
-                selected: selected == TaskView.all,
-                onTap: () => onSelect(TaskView.all),
-              ),
-              const SizedBox(height: 7),
-              HomeNavItem(
-                label: 'Today',
-                icon: Icons.today_rounded,
-                selected: selected == TaskView.today,
-                onTap: () => onSelect(TaskView.today),
-              ),
-              const SizedBox(height: 7),
-              HomeNavItem(
-                label: 'Upcoming',
-                icon: Icons.calendar_month_outlined,
-                selected: selected == TaskView.upcoming,
-                onTap: () => onSelect(TaskView.upcoming),
+                selected: selected == TaskView.tasks,
+                onTap: () => onSelect(TaskView.tasks),
               ),
               const SizedBox(height: 7),
               HomeNavItem(
                 label: 'Done',
                 icon: Icons.check_circle_outline_rounded,
-                selected: selected == TaskView.completed,
-                onTap: () => onSelect(TaskView.completed),
+                selected: selected == TaskView.done,
+                onTap: () => onSelect(TaskView.done),
               ),
               const SizedBox(height: 18),
               IconButton.filled(

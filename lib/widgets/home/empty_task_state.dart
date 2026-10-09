@@ -33,9 +33,7 @@ class EmptyTaskState extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          view == TaskView.completed
-              ? 'Nothing completed yet'
-              : 'All clear here',
+          view == TaskView.done ? 'Nothing completed yet' : 'All clear here',
           style: TextStyle(
             color: context.palette.ink,
             fontSize: 17,

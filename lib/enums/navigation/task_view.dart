@@ -1,1 +1,1 @@
-enum TaskView { all, today, upcoming, completed }
+enum TaskView { tasks, done }

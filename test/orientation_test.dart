@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_list/app.dart';
 import 'package:todo_list/widgets/home/home_bottom_bar.dart';
+import 'package:todo_list/widgets/home/home_nav_item.dart';
 import 'package:todo_list/widgets/home/home_side_bar.dart';
 import 'package:todo_list/widgets/task_card/task_card.dart';
 import 'package:todo_list/widgets/task_editor/task_editor_layout.dart';
@@ -24,6 +25,12 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(HomeSideBar), findsOneWidget);
     expect(find.byType(HomeBottomBar), findsNothing);
+    expect(
+      tester
+          .widgetList<HomeNavItem>(find.byType(HomeNavItem))
+          .map((item) => item.label),
+      ['Tasks', 'Done'],
+    );
     expect(find.byType(TaskCard), findsWidgets);
     expect(tester.takeException(), isNull);
 
@@ -53,6 +60,12 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(HomeBottomBar), findsOneWidget);
     expect(find.byType(HomeSideBar), findsNothing);
+    expect(
+      tester
+          .widgetList<HomeNavItem>(find.byType(HomeNavItem))
+          .map((item) => item.label),
+      ['Tasks', 'Done'],
+    );
     expect(tester.takeException(), isNull);
   });
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../enums/navigation/task_view.dart';
 import '../../theme/app_palette.dart';
 import '../../utils/date_format.dart';
 import 'filter_range_field.dart';
@@ -7,24 +8,24 @@ import 'filter_range_field.dart';
 class TaskTimeFilterForm extends StatelessWidget {
   const TaskTimeFilterForm({
     super.key,
+    required this.view,
     required this.fromDay,
     required this.toDay,
     required this.fromMinute,
     required this.toMinute,
     required this.invalidDays,
-    required this.onQuickDay,
     required this.onPickDay,
     required this.onPickTime,
     required this.onClear,
     required this.onApply,
   });
 
+  final TaskView view;
   final DateTime? fromDay;
   final DateTime? toDay;
   final int? fromMinute;
   final int? toMinute;
   final bool invalidDays;
-  final ValueChanged<int> onQuickDay;
   final ValueChanged<bool> onPickDay;
   final ValueChanged<bool> onPickTime;
   final VoidCallback onClear;
@@ -56,29 +57,15 @@ class TaskTimeFilterForm extends StatelessWidget {
     padding: const EdgeInsets.fromLTRB(22, 12, 22, 24),
     children: [
       Text(
-        'Filter by date & time',
+        view == TaskView.tasks ? 'Filter tasks' : 'Filter done tasks',
         style: Theme.of(context).textTheme.titleLarge,
       ),
       const SizedBox(height: 5),
       Text(
-        'Find tasks due on a day, across days, or within hours.',
+        'Narrow this list by due date, time, or both.',
         style: TextStyle(color: context.palette.muted),
       ),
       const SizedBox(height: 20),
-      Wrap(
-        spacing: 8,
-        children: [
-          ActionChip(
-            label: const Text('Today'),
-            onPressed: () => onQuickDay(0),
-          ),
-          ActionChip(
-            label: const Text('Tomorrow'),
-            onPressed: () => onQuickDay(1),
-          ),
-        ],
-      ),
-      const SizedBox(height: 15),
       _heading('DAY RANGE'),
       _pair(
         FilterRangeField(
@@ -130,7 +117,7 @@ class TaskTimeFilterForm extends StatelessWidget {
           const Spacer(),
           FilledButton(
             onPressed: invalidDays ? null : onApply,
-            child: const Text('Show tasks'),
+            child: Text(view == TaskView.tasks ? 'Show tasks' : 'Show done'),
           ),
         ],
       ),

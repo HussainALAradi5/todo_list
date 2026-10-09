@@ -30,26 +30,10 @@ class HomeBottomBar extends StatelessWidget {
           children: [
             Expanded(
               child: HomeNavItem(
-                label: 'All',
+                label: 'Tasks',
                 icon: Icons.view_list_rounded,
-                selected: selected == TaskView.all,
-                onTap: () => onSelect(TaskView.all),
-              ),
-            ),
-            Expanded(
-              child: HomeNavItem(
-                label: 'Today',
-                icon: Icons.today_rounded,
-                selected: selected == TaskView.today,
-                onTap: () => onSelect(TaskView.today),
-              ),
-            ),
-            Expanded(
-              child: HomeNavItem(
-                label: 'Upcoming',
-                icon: Icons.calendar_month_outlined,
-                selected: selected == TaskView.upcoming,
-                onTap: () => onSelect(TaskView.upcoming),
+                selected: selected == TaskView.tasks,
+                onTap: () => onSelect(TaskView.tasks),
               ),
             ),
             Semantics(
@@ -69,8 +53,8 @@ class HomeBottomBar extends StatelessWidget {
               child: HomeNavItem(
                 label: 'Done',
                 icon: Icons.check_circle_outline_rounded,
-                selected: selected == TaskView.completed,
-                onTap: () => onSelect(TaskView.completed),
+                selected: selected == TaskView.done,
+                onTap: () => onSelect(TaskView.done),
               ),
             ),
           ],

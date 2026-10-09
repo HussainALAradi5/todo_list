@@ -56,7 +56,10 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder: (_) => TaskTimeFilterSheet(initial: _filters.timeFilter),
+      builder: (_) => TaskTimeFilterSheet(
+        view: _filters.view,
+        initial: _filters.timeFilter,
+      ),
     );
     if (mounted && filter != null) _filters.applyTimeFilter(filter);
   }
@@ -73,7 +76,6 @@ class _HomeScreenState extends State<HomeScreen> {
       tasks: _taskQuery.visibleTasks(
         tasks,
         view: _filters.view,
-        now: now,
         category: _filters.category,
         query: _filters.query,
         timeFilter: _filters.timeFilter,

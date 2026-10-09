@@ -4,8 +4,8 @@ A clean, responsive todo app for Android and iPhone, built with Flutter.
 
 ## Features
 
-- Today, Upcoming, and Completed views
-- All tasks view with day and time range filters that can be combined
+- Tasks and Done views: unfinished work stays in Tasks regardless of due date
+- Day and time range filters that can be combined within either view
 - Add, edit, complete, and delete tasks
 - Categories, Normal/High/Urgent priority, notes, due dates, and times
 - Search and category filters
@@ -22,13 +22,25 @@ The app opens with a few editable example tasks on first launch. After that, it 
 
 ## See it in action
 
-These screens were captured from the Android app with example tasks. The same Flutter interface is designed for iPhone as well.
+These screens were captured from the Android app with example tasks. The same Flutter interface is designed for iPhone as well. Screens farther down show earlier versions of the navigation and remain here as an update history.
+
+### Current navigation
+
+**Tasks** holds every unfinished task, whether it is overdue, due today, scheduled later, or has no due date. **Done** holds completed tasks. The **+** button is available from either view.
+
+| Tasks | Done |
+|:---:|:---:|
+| <img src="docs/screenshots/tasks-current.png" alt="Current Tasks view with progress and unfinished examples" width="370"> | <img src="docs/screenshots/done-current.png" alt="Current Done view with completed examples" width="370"> |
 
 ### Find the right time
 
-Open **All**, then **Date & time** to find tasks due on a day, between days, between hours, or with both ranges together. Time ranges can cross midnight. Search and category filters still work alongside the date and time filter.
+Open **Tasks** or **Done**, then **Date & time** to find tasks due on a day, between days, between hours, or with both ranges together. Time ranges can cross midnight. Search and category filters still work alongside the date and time filter.
 
-<img src="docs/screenshots/time-filter.png" alt="Date and time filter sheet with day and hour ranges" width="370">
+| Filter Tasks | Filter Done |
+|:---:|:---:|
+| <img src="docs/screenshots/filter-current.png" alt="Date and time filter scoped to unfinished tasks" width="370"> | <img src="docs/screenshots/done-filter-current.png" alt="Date and time filter scoped to completed tasks" width="370"> |
+
+The [earlier filter screenshot](docs/screenshots/time-filter.png) remains available.
 
 ### Get a reminder
 
@@ -47,7 +59,7 @@ Save and Delete show a busy indicator and disable repeat taps while the change i
 | Light | <img src="docs/screenshots/delete-confirmation.png" alt="Light mode delete confirmation naming the selected task" width="290"> | <img src="docs/screenshots/delete-undo-feedback.png" alt="Light mode task deleted feedback with an Undo action" width="290"> |
 | Dark | <img src="docs/screenshots/delete-confirmation-dark.png" alt="Dark mode delete confirmation naming the selected task" width="290"> | <img src="docs/screenshots/delete-undo-feedback-dark.png" alt="Dark mode task deleted feedback with an Undo action" width="290"> |
 
-### Focus on today
+### Earlier Today dashboard
 
 Urgent tasks appear before High and Normal tasks. The progress ring updates as you complete them, and the theme button switches between light and dark mode.
 
@@ -57,9 +69,9 @@ Urgent tasks appear before High and Normal tasks. The progress ring updates as y
 
 ### Plan and prioritize
 
-Tap **+** to add a task. Give it a title, optional notes, a category, a due date and time, and a Normal, High, or Urgent priority. For example, *Ship the product launch* is Urgent; *Prepare sprint demo* is High and due tomorrow morning. The **Upcoming** view keeps future work separate from Today.
+Tap **+** to add a task. Give it a title, optional notes, a category, a due date and time, and a Normal, High, or Urgent priority. For example, *Ship the product launch* is Urgent; *Prepare sprint demo* is High and due tomorrow morning. Both appear in **Tasks** until completed. The earlier Upcoming screenshot is kept below for reference.
 
-| Urgent task | Scheduled task | Upcoming view |
+| Urgent task | Scheduled task | Earlier Upcoming view |
 |:---:|:---:|:---:|
 | <img src="docs/screenshots/task-editor.png" alt="Creating an Urgent Work task with notes" width="245"> | <img src="docs/screenshots/scheduled-editor.png" alt="Scheduling a High priority Work task for tomorrow" width="245"> | <img src="docs/screenshots/upcoming.png" alt="Upcoming view showing two tasks due tomorrow" width="245"> |
 

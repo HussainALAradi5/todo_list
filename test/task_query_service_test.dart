@@ -25,7 +25,7 @@ void main() {
     category: category,
   );
 
-  test('groups tasks by view and calculates progress with one due rule', () {
+  test('tasks includes all unfinished dates; done contains completed', () {
     final tasks = [
       task('anytime'),
       task('overdue', dueAt: DateTime(2026, 10, 8)),
@@ -35,21 +35,11 @@ void main() {
     ];
 
     expect(
-      service
-          .visibleTasks(tasks, view: TaskView.today, now: now)
-          .map((item) => item.id),
-      ['overdue', 'today', 'anytime'],
+      service.visibleTasks(tasks, view: TaskView.tasks).map((item) => item.id),
+      ['overdue', 'today', 'tomorrow', 'anytime'],
     );
     expect(
-      service
-          .visibleTasks(tasks, view: TaskView.upcoming, now: now)
-          .map((item) => item.id),
-      ['tomorrow'],
-    );
-    expect(
-      service
-          .visibleTasks(tasks, view: TaskView.completed, now: now)
-          .map((item) => item.id),
+      service.visibleTasks(tasks, view: TaskView.done).map((item) => item.id),
       ['done'],
     );
     final progress = service.progressForToday(tasks, now);
@@ -79,8 +69,7 @@ void main() {
       service
           .visibleTasks(
             tasks,
-            view: TaskView.today,
-            now: now,
+            view: TaskView.tasks,
             category: TaskCategory.work,
             query: ' REPORT ',
           )
@@ -105,9 +94,7 @@ void main() {
     ];
 
     expect(
-      service
-          .visibleTasks(tasks, view: TaskView.today, now: now)
-          .map((item) => item.id),
+      service.visibleTasks(tasks, view: TaskView.tasks).map((item) => item.id),
       ['sooner', 'later', 'normal'],
     );
   });
